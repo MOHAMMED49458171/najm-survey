@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>استبيان قبل العرض — نجم</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;700&display=swap');
+:root{ --green:#003921; --accent:#00DF8E; --accent2:#00A968; --ink:#12261d; --muted:#5c6f66; --bg:#f3f7f4; }
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+body{ font-family:'Noto Kufi Arabic',sans-serif; background:var(--bg); color:var(--ink); line-height:1.7; }
+.dash{ background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='70' height='70'><line x1='8' y1='40' x2='30' y2='18' stroke='%2300df8e' stroke-width='4' stroke-linecap='round' opacity='0.5'/></svg>"); }
+.wrap{ max-width:760px; margin:0 auto; padding:0 16px 60px; }
+header{ background:var(--green); color:#fff; padding:34px 20px 42px; position:relative; overflow:hidden; }
+header .dashlayer{ position:absolute; inset:0; opacity:.35;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><line x1='8' y1='38' x2='28' y2='18' stroke='%2300df8e' stroke-width='4' stroke-linecap='round'/></svg>"); }
+header .inner{ position:relative; max-width:760px; margin:0 auto; }
+header img.logo{ height:56px; margin-bottom:18px; }
+header h1{ font-size:30px; font-weight:700; }
+header .sub{ color:var(--accent); font-weight:500; margin-top:6px; font-size:17px; }
+.introcard{ background:#fff; border-radius:18px; padding:20px 22px; margin:-22px auto 22px; max-width:760px; box-shadow:0 10px 30px rgba(0,57,33,.10); position:relative; z-index:2; border-right:6px solid var(--accent); }
+.introcard p{ color:var(--muted); }
+.ident{ margin:0 auto 20px; }
+.ident label{ font-weight:500; display:block; margin-bottom:8px; color:var(--green); }
+.ident input{ width:100%; padding:14px 16px; border:2px solid #e0e8e3; border-radius:12px; font-family:inherit; font-size:15px; }
+.ident input:focus{ outline:none; border-color:var(--accent2); }
+.q{ background:#fff; border-radius:18px; padding:22px 22px 10px; margin-bottom:18px; box-shadow:0 4px 18px rgba(0,57,33,.06); }
+.qnum{ display:inline-block; background:var(--green); color:#fff; width:30px; height:30px; border-radius:50%; text-align:center; line-height:30px; font-weight:700; font-size:15px; margin-left:10px; }
+.qtext{ font-weight:700; font-size:18px; color:var(--ink); display:inline; }
+.hint{ color:var(--accent2); font-size:13px; margin:8px 0 2px; font-style:italic; }
+.opts{ margin-top:16px; }
+.opt{ display:flex; align-items:center; gap:12px; padding:14px 16px; border:2px solid #e8efea; border-radius:14px; margin-bottom:10px; cursor:pointer; transition:.15s; font-size:15px; }
+.opt:hover{ border-color:var(--accent); background:#f4fdf8; }
+.opt input{ accent-color:var(--green); width:20px; height:20px; flex:0 0 auto; }
+.opt.sel{ border-color:var(--green); background:#eefaf3; }
+.opt.correct{ border-color:var(--accent2); background:#e8fbf1; }
+.opt.wrong{ border-color:#e2857f; background:#fdeeed; }
+.scale{ display:flex; justify-content:space-between; gap:8px; margin-top:16px; }
+.scale button{ flex:1; padding:16px 0; border:2px solid #e8efea; background:#fff; border-radius:14px; font-family:inherit; font-size:20px; font-weight:700; cursor:pointer; color:var(--green); transition:.15s; }
+.scale button:hover{ border-color:var(--accent); }
+.scale button.sel{ background:var(--green); color:#fff; border-color:var(--green); }
+.scalelbl{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:8px; padding:0 4px; }
+textarea{ width:100%; margin-top:14px; padding:14px 16px; border:2px solid #e8efea; border-radius:12px; font-family:inherit; font-size:15px; resize:vertical; min-height:90px; }
+textarea:focus{ outline:none; border-color:var(--accent2); }
+.submit{ width:100%; padding:18px; background:var(--accent); color:var(--green); border:none; border-radius:16px; font-family:inherit; font-size:19px; font-weight:700; cursor:pointer; margin-top:8px; transition:.15s; }
+.submit:hover{ background:#00c97f; }
+.err{ color:#c0392b; text-align:center; margin-top:14px; font-size:14px; min-height:18px; }
+.footer{ text-align:center; margin-top:26px; display:none; }
+.footer a{ color:var(--muted); font-size:12px; text-decoration:none; opacity:.7; }
+/* result */
+.result{ display:none; text-align:center; background:#fff; border-radius:22px; padding:44px 26px; margin-top:26px; box-shadow:0 10px 30px rgba(0,57,33,.10); }
+.result h2{ color:var(--green); font-size:28px; margin-bottom:12px; }
+.result p{ color:var(--muted); font-size:16px; max-width:520px; margin:0 auto; }
+.scorebadge{ display:inline-block; background:var(--green); color:#fff; padding:14px 26px; border-radius:16px; font-size:20px; font-weight:700; margin:18px 0; }
+.scorebadge b{ color:var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <div class="dashlayer"></div>
+  <div class="inner">
+    <img class="logo" src="data:image/png;base64,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" alt="نجم">
+    <h1>استبيان قبل العرض</h1>
+    <div class="sub">قياس الوعي المبدئي — قبل ما نبدأ</div>
+  </div>
+</header>
+<div class="wrap">
+  <div class="introcard"><p>قبل ما نبدأ، حاب نعرف كيف تفكّر في مواقف الطريق. جاوب بصراحة — ما فيه درجات، هدفنا نطوّر.</p></div>
+  <form id="f" onsubmit="return false;">
+    <div class="q ident">
+      <label for="ident">اسمك أو رقمك (اختياري — يساعدنا نقارن قبل/بعد)</label>
+      <input id="ident" type="text" placeholder="مثال: فيصل - ثالث ثانوي / أو رقم الطالب">
+    </div>
+    
+    <button class="submit" id="btn">إرسال إجاباتي</button>
+    <div class="err" id="err"></div>
+  </form>
+  <div class="result" id="result">
+    <h2 id="rtitle"></h2>
+    <div id="scorewrap"></div>
+    <p id="rbody"></p>
+  </div>
+  <div class="footer"><a href="#" id="exp">للمشرف: تصدير الردود (CSV)</a></div>
+</div>
+<script>
+const QUESTIONS = [{"type": "scale", "q": "كيف تقيّم معرفتك بالأنظمة والسلوكيات المرورية الصحيحة؟", "min": "ضعيفة جداً", "max": "ممتازة"}, {"type": "mcq", "q": "تسوق في خط سريع والسيارة اللي قدامك ماشية ببطء، وش أنسب تصرف؟", "options": ["أقرّب منها وأكبس له عشان يفتح لي المسار.", "أتأكد من المرآة والنقطة العمياء، وأغيّر مساري باستخدام الإشارة.", "أتجاوزها من اليمين بسرعة عشان أختصر الوقت."], "correct": 1}, {"type": "mcq", "q": "أي سلوك تتوقعه الأعلى تسبباً للحوادث في المملكة؟", "hint": "كل الخيارات خطيرة، بس أيها الأعلى فعلاً؟", "options": ["السرعة الزائدة على الطرق السريعة.", "عدم ترك مسافة كافية بين المركبات (التلحيم).", "الانشغال بالجوال أثناء القيادة."], "correct": 1}, {"type": "mcq", "q": "المسافة الآمنة بينك وبين السيارة اللي قدامك تُحسب كيف؟", "options": ["أترك مسافة تكفي سيارة وحدة بس.", "على حسب مهارتي وسرعة استجابتي.", "أطبّق قاعدة الـ3 ثواني."], "correct": 2}, {"type": "mcq", "q": "التجاوز من اليمين وبين المنعطفات يعتبر:", "options": ["مهارة ومسموح إذا الطريق فاضي.", "مخالفة نظامية غرامتها قد توصل 2000 ريال.", "عادي طالما ما فيه دورية."], "correct": 1}];
+const REVEAL = false;
+const STOREKEY = "najm_survey_before";
+// ==== إعدادات التجميع المركزي ====
+// الصق رابط تطبيق الويب (Google Apps Script Web App) بين علامتي الاقتباس:
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbyGYe63cdTuMATqCyisBoOJ_1TSJl5WU1nqMO-DlKDxy7UR8qa_m-dDOQ44OPYqjSjyrw/exec";
+const SURVEY_ID = "before";
+
+const answers = {};
+
+function render(){
+  const form = document.getElementById('f');
+  const anchor = document.getElementById('btn');
+  QUESTIONS.forEach((q,i)=>{
+    const card = document.createElement('div'); card.className='q'; card.dataset.i=i;
+    let html = '<span class="qnum">'+(i+1)+'</span><span class="qtext">'+q.q+'</span>';
+    if(q.hint) html += '<div class="hint">'+q.hint+'</div>';
+    if(q.type==='mcq'){
+      html += '<div class="opts">'+q.options.map((o,j)=>
+        '<label class="opt" data-j="'+j+'"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+o+'</span></label>').join('')+'</div>';
+    } else if(q.type==='tf'){
+      html += '<div class="opts">'+['صح','خطأ'].map((o,j)=>
+        '<label class="opt" data-j="'+j+'"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+o+'</span></label>').join('')+'</div>';
+    } else if(q.type==='scale'){
+      html += '<div class="scale">'+[1,2,3,4,5].map(n=>'<button type="button" data-v="'+n+'">'+n+'</button>').join('')+'</div>';
+      html += '<div class="scalelbl"><span>'+q.min+'</span><span>'+q.max+'</span></div>';
+    } else if(q.type==='text'){
+      html += '<textarea name="q'+i+'" placeholder="اكتب هنا... (اختياري)"></textarea>';
+    }
+    card.innerHTML = html;
+    form.insertBefore(card, anchor);
+    // handlers
+    if(q.type==='mcq'||q.type==='tf'){
+      card.querySelectorAll('.opt').forEach(opt=>{
+        opt.addEventListener('click',()=>{
+          card.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+          opt.classList.add('sel'); opt.querySelector('input').checked=true;
+          answers[i]=parseInt(opt.dataset.j);
+        });
+      });
+    } else if(q.type==='scale'){
+      card.querySelectorAll('.scale button').forEach(b=>{
+        b.addEventListener('click',()=>{
+          card.querySelectorAll('.scale button').forEach(x=>x.classList.remove('sel'));
+          b.classList.add('sel'); answers[i]=parseInt(b.dataset.v);
+        });
+      });
+    } else if(q.type==='text'){
+      card.querySelector('textarea').addEventListener('input',e=>{ answers[i]=e.target.value; });
+    }
+  });
+}
+render();
+
+document.getElementById('btn').addEventListener('click',()=>{
+  const err=document.getElementById('err'); err.textContent='';
+  for(let i=0;i<QUESTIONS.length;i++){
+    const q=QUESTIONS[i];
+    if(q.optional) continue;
+    if(answers[i]===undefined||answers[i]===''){ err.textContent='رجاءً جاوب على كل الأسئلة قبل الإرسال (السؤال '+(i+1)+').'; 
+      document.querySelector('.q[data-i="'+i+'"]').scrollIntoView({behavior:'smooth',block:'center'}); return; }
+  }
+  // score knowledge questions
+  let correct=0, total=0;
+  QUESTIONS.forEach((q,i)=>{ if(q.type==='mcq'||q.type==='tf'){ total++; if(answers[i]===q.correct) correct++; } });
+  // store
+  const rec={ ts:new Date().toISOString(), ident:document.getElementById('ident').value||'', score:correct, total:total, answers:answers };
+  try{ const all=JSON.parse(localStorage.getItem(STOREKEY)||'[]'); all.push(rec); localStorage.setItem(STOREKEY,JSON.stringify(all)); }catch(e){}
+  // إرسال للشيت المركزي (إن وُجد رابط)
+  if(ENDPOINT && ENDPOINT.indexOf('http')===0){
+    try{ fetch(ENDPOINT, { method:'POST', mode:'no-cors', body: JSON.stringify(Object.assign({survey:SURVEY_ID}, rec)) }); }catch(e){}
+  }
+  // reveal correct answers (after only)
+  if(REVEAL){
+    QUESTIONS.forEach((q,i)=>{
+      if(q.type==='mcq'||q.type==='tf'){
+        const card=document.querySelector('.q[data-i="'+i+'"]');
+        card.querySelectorAll('.opt').forEach(opt=>{
+          const j=parseInt(opt.dataset.j);
+          if(j===q.correct) opt.classList.add('correct');
+          else if(j===answers[i]) opt.classList.add('wrong');
+        });
+      }
+    });
+  }
+  // show result
+  document.getElementById('f').style.display='none';
+  const res=document.getElementById('result'); res.style.display='block';
+  document.getElementById('rtitle').textContent='شكراً لك! 🌟';
+  document.getElementById('rbody').textContent='سجّلنا إجاباتك. جهّز نفسك للعرض.. وبتكتشف كم من إجاباتك بتتغيّر بعده.';
+  if(REVEAL && total>0){
+    document.getElementById('scorewrap').innerHTML='<div class="scorebadge">جاوبت صح <b>'+correct+'</b> من '+total+'</div>';
+  }
+  res.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+// admin CSV export
+document.getElementById('exp').addEventListener('click',(e)=>{
+  e.preventDefault();
+  let all=[]; try{ all=JSON.parse(localStorage.getItem(STOREKEY)||'[]'); }catch(e){}
+  if(!all.length){ alert('ما فيه ردود مخزّنة على هذا الجهاز بعد.'); return; }
+  const cols=['ts','ident','score','total'].concat(QUESTIONS.map((q,i)=>'q'+(i+1)));
+  const rows=[cols.join(',')];
+  all.forEach(r=>{
+    const line=[r.ts, '"'+(r.ident||'').replace(/"/g,'""')+'"', r.score, r.total]
+      .concat(QUESTIONS.map((q,i)=>{ let v=r.answers[i]; if(typeof v==='string') return '"'+v.replace(/"/g,'""')+'"'; return v===undefined?'':v; }));
+    rows.push(line.join(','));
+  });
+  const blob=new Blob(["\ufeff"+rows.join("\n")],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=STOREKEY+'.csv'; a.click();
+});
+
+// admin-only: reveal export link when URL has ?admin=1 (or #admin)
+(function(){
+  var p=new URLSearchParams(location.search);
+  if(p.get('admin')==='1' || location.hash==='#admin'){
+    var fo=document.querySelector('.footer'); if(fo) fo.style.display='block';
+  }
+})();
+</script>
+</body>
+</html>
