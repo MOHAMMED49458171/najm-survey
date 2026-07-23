@@ -39,6 +39,9 @@ header .sub{ color:var(--accent); font-weight:500; margin-top:6px; font-size:17p
 .scale button{ flex:1; padding:16px 0; border:2px solid #e8efea; background:#fff; border-radius:14px; font-family:inherit; font-size:20px; font-weight:700; cursor:pointer; color:var(--green); transition:.15s; }
 .scale button:hover{ border-color:var(--accent); }
 .scale button.sel{ background:var(--green); color:#fff; border-color:var(--green); }
+.scale.scale-wide{ gap:5px; }
+.scale.scale-wide button{ padding:12px 0; font-size:15px; }
+@media(max-width:520px){ .scale.scale-wide{ flex-wrap:wrap; } .scale.scale-wide button{ flex:0 0 calc(20% - 4px); } }
 .scalelbl{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:8px; padding:0 4px; }
 textarea{ width:100%; margin-top:14px; padding:14px 16px; border:2px solid #e8efea; border-radius:12px; font-family:inherit; font-size:15px; resize:vertical; min-height:90px; }
 textarea:focus{ outline:none; border-color:var(--accent2); }
@@ -83,7 +86,7 @@ textarea:focus{ outline:none; border-color:var(--accent2); }
   <div class="footer"><a href="#" id="exp">للمشرف: تصدير الردود (CSV)</a></div>
 </div>
 <script>
-const QUESTIONS = [{"type": "scale", "q": "كيف تقيّم معرفتك الحين بالأنظمة والسلوكيات المرورية؟", "min": "ضعيفة جداً", "max": "ممتازة"}, {"type": "tf", "q": "أعلى مسبب للحوادث في المملكة هو عدم ترك مسافة كافية (أكثر من 697 ألف حادث).", "correct": 0}, {"type": "tf", "q": "المسافة الآمنة بين المركبات تُحسب بقاعدة الـ3 ثواني.", "correct": 0}, {"type": "mcq", "q": "أسرع وأسهل طريقة للتبليغ عن حادث:", "options": ["أنتظر دورية تمر بالشارع بالصدفة.", "عن طريق تطبيق نجم أو الرقم الموحد 199033.", "أصوّر الحادث وأرسله للأصدقاء."], "correct": 1}, {"type": "scale", "q": "بعد العرض، صرت أكثر وعياً بخطورة السرعة وعدم ترك المسافة والانشغال بالجوال.", "min": "لا أوافق", "max": "أوافق تماماً"}, {"type": "text", "q": "عندك سؤال أو اقتراح أو معلومة تفيدنا؟ (اختياري)", "optional": true}];
+const QUESTIONS = [{"type": "scale", "q": "هل ترشّح إقامة هذا العرض في مدارس أخرى؟", "min": "لا أرشّح", "max": "أرشّح بشدة", "steps": 10}, {"type": "scale", "q": "كيف تقيّم معرفتك الحين بالأنظمة والسلوكيات المرورية؟", "min": "ضعيفة جداً", "max": "ممتازة"}, {"type": "tf", "q": "أعلى مسبب للحوادث في المملكة هو عدم ترك مسافة كافية (أكثر من 697 ألف حادث).", "correct": 0}, {"type": "tf", "q": "المسافة الآمنة بين المركبات تُحسب بقاعدة الـ3 ثواني.", "correct": 0}, {"type": "mcq", "q": "أسرع وأسهل طريقة للتبليغ عن حادث:", "options": ["أنتظر دورية تمر بالشارع بالصدفة.", "عن طريق تطبيق نجم أو الرقم الموحد 199033.", "أصوّر الحادث وأرسله للأصدقاء."], "correct": 1}, {"type": "scale", "q": "بعد العرض، صرت أكثر وعياً بخطورة السرعة وعدم ترك المسافة والانشغال بالجوال.", "min": "لا أوافق", "max": "أوافق تماماً"}, {"type": "text", "q": "عندك سؤال أو اقتراح أو معلومة تفيدنا؟ (اختياري)", "optional": true}];
 const REVEAL = true;
 const STOREKEY = "najm_survey_after";
 // ==== إعدادات التجميع المركزي ====
@@ -107,7 +110,9 @@ function render(){
       html += '<div class="opts">'+['صح','خطأ'].map((o,j)=>
         '<label class="opt" data-j="'+j+'"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+o+'</span></label>').join('')+'</div>';
     } else if(q.type==='scale'){
-      html += '<div class="scale">'+[1,2,3,4,5].map(n=>'<button type="button" data-v="'+n+'">'+n+'</button>').join('')+'</div>';
+      var _steps = q.steps || 5;
+      var _arr = []; for(var _s=1;_s<=_steps;_s++) _arr.push(_s);
+      html += '<div class="scale'+(_steps>5?' scale-wide':'')+'">'+_arr.map(n=>'<button type="button" data-v="'+n+'">'+n+'</button>').join('')+'</div>';
       html += '<div class="scalelbl"><span>'+q.min+'</span><span>'+q.max+'</span></div>';
     } else if(q.type==='text'){
       html += '<textarea name="q'+i+'" placeholder="اكتب هنا... (اختياري)"></textarea>';
