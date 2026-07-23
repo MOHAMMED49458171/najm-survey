@@ -39,6 +39,9 @@ header .sub{ color:var(--accent); font-weight:500; margin-top:6px; font-size:17p
 .scale button{ flex:1; padding:16px 0; border:2px solid #e8efea; background:#fff; border-radius:14px; font-family:inherit; font-size:20px; font-weight:700; cursor:pointer; color:var(--green); transition:.15s; }
 .scale button:hover{ border-color:var(--accent); }
 .scale button.sel{ background:var(--green); color:#fff; border-color:var(--green); }
+.scale.scale-wide{ gap:5px; }
+.scale.scale-wide button{ padding:12px 0; font-size:15px; }
+@media(max-width:520px){ .scale.scale-wide{ flex-wrap:wrap; } .scale.scale-wide button{ flex:0 0 calc(20% - 4px); } }
 .scalelbl{ display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:8px; padding:0 4px; }
 textarea{ width:100%; margin-top:14px; padding:14px 16px; border:2px solid #e8efea; border-radius:12px; font-family:inherit; font-size:15px; resize:vertical; min-height:90px; }
 textarea:focus{ outline:none; border-color:var(--accent2); }
@@ -83,7 +86,7 @@ textarea:focus{ outline:none; border-color:var(--accent2); }
   <div class="footer"><a href="#" id="exp">للمشرف: تصدير الردود (CSV)</a></div>
 </div>
 <script>
-const QUESTIONS = [{"type": "scale", "q": "كيف تقيّم معرفتك بالأنظمة والسلوكيات المرورية الصحيحة؟", "min": "ضعيفة جداً", "max": "ممتازة"}, {"type": "mcq", "q": "تسوق في خط سريع والسيارة اللي قدامك ماشية ببطء، وش أنسب تصرف؟", "options": ["أقرّب منها وأكبس له عشان يفتح لي المسار.", "أتأكد من المرآة والنقطة العمياء، وأغيّر مساري باستخدام الإشارة.", "أتجاوزها من اليمين بسرعة عشان أختصر الوقت."], "correct": 1}, {"type": "mcq", "q": "أي سلوك تتوقعه الأعلى تسبباً للحوادث في المملكة؟", "hint": "كل الخيارات خطيرة، بس أيها الأعلى فعلاً؟", "options": ["السرعة الزائدة على الطرق السريعة.", "عدم ترك مسافة كافية بين المركبات (التلحيم).", "الانشغال بالجوال أثناء القيادة."], "correct": 1}, {"type": "mcq", "q": "المسافة الآمنة بينك وبين السيارة اللي قدامك تُحسب كيف؟", "options": ["أترك مسافة تكفي سيارة وحدة بس.", "على حسب مهارتي وسرعة استجابتي.", "أطبّق قاعدة الـ3 ثواني."], "correct": 2}, {"type": "mcq", "q": "التجاوز من اليمين وبين المنعطفات يعتبر:", "options": ["مهارة ومسموح إذا الطريق فاضي.", "مخالفة نظامية غرامتها قد توصل 2000 ريال.", "عادي طالما ما فيه دورية."], "correct": 1}];
+const QUESTIONS = [{"type": "scale", "q": "كيف تقيّم معرفتك بالأنظمة والسلوكيات المرورية الصحيحة؟", "min": "ضعيفة جداً", "max": "ممتازة"}, {"type": "mcq", "q": "تسوق في خط سريع والسيارة اللي قدامك ماشية ببطء، وش أنسب تصرف؟", "options": ["أقرّب منها وأكبس له عشان يفتح لي المسار.", "أتأكد من المرآة والنقطة العمياء، وأغيّر مساري باستخدام الإشارة.", "أتجاوزها من اليمين بسرعة عشان أختصر الوقت."], "correct": 1}, {"type": "mcq", "q": "أي سلوك تتوقعه الأعلى تسبباً للحوادث في المملكة؟", "hint": "كل الخيارات خطيرة، بس أيها الأعلى فعلاً؟", "options": ["السرعة الزائدة على الطرق السريعة.", "عدم ترك مسافة كافية بين المركبات (التلحيم).", "الانشغال بالجوال أثناء القيادة."], "correct": 1}, {"type": "mcq", "q": "المسافة الآمنة بينك وبين السيارة اللي قدامك تُحسب كيف؟", "options": ["أترك مسافة تكفي سيارة وحدة بس.", "على حسب مهارتي وسرعة استجابتي.", "أطبّق قاعدة الـ3 ثواني."], "correct": 2}, {"type": "mcq", "q": "كم توصل غرامة التجاوز غير النظامي (من اليمين أو بين المنعطفات)؟", "hint": "ركّز.. الفرق بين الخيارات بسيط!", "options": ["توصل إلى 1000 ريال.", "توصل إلى 1500 ريال.", "توصل إلى 2000 ريال."], "correct": 2}];
 const REVEAL = false;
 const STOREKEY = "najm_survey_before";
 // ==== إعدادات التجميع المركزي ====
@@ -107,7 +110,9 @@ function render(){
       html += '<div class="opts">'+['صح','خطأ'].map((o,j)=>
         '<label class="opt" data-j="'+j+'"><input type="radio" name="q'+i+'" value="'+j+'"><span>'+o+'</span></label>').join('')+'</div>';
     } else if(q.type==='scale'){
-      html += '<div class="scale">'+[1,2,3,4,5].map(n=>'<button type="button" data-v="'+n+'">'+n+'</button>').join('')+'</div>';
+      var _steps = q.steps || 5;
+      var _arr = []; for(var _s=1;_s<=_steps;_s++) _arr.push(_s);
+      html += '<div class="scale'+(_steps>5?' scale-wide':'')+'">'+_arr.map(n=>'<button type="button" data-v="'+n+'">'+n+'</button>').join('')+'</div>';
       html += '<div class="scalelbl"><span>'+q.min+'</span><span>'+q.max+'</span></div>';
     } else if(q.type==='text'){
       html += '<textarea name="q'+i+'" placeholder="اكتب هنا... (اختياري)"></textarea>';
